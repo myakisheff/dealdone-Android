@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DealDone</string>
+    <string name="date_pattern">dd.MM.yyyy | HH:mm</string>
 </resources>
