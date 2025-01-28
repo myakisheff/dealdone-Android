@@ -1,5 +1,6 @@
 package com.example.dealdone.ui.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,12 +36,27 @@ import java.util.UUID
 @Composable
 fun TaskCard(
     task: TaskInfo,
-    modifier: Modifier
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val dateFormat = SimpleDateFormat(stringResource(R.string.date_pattern), Locale.getDefault())
     val date = dateFormat.format(task.targetDate.time).toString()
 
+    var color = when(task.taskPriority) {
+        TaskPriority.LOW -> colorResource(R.color.Low_priority)
+        TaskPriority.MEDIUM -> colorResource(R.color.Medium_priority)
+        TaskPriority.HIGH -> colorResource(R.color.High_priority)
+    }
+
+    color = when(task.taskStatus) {
+        TaskStatus.IN_PROGRESS -> color
+        TaskStatus.COMPLETED -> colorResource(R.color.Completed)
+        TaskStatus.EXPIRED -> colorResource(R.color.Expired)
+    }
+
     Card(
+        border = BorderStroke(1.dp, color),
+        onClick = onClick,
         modifier = modifier.fillMaxWidth()
     ) {
         Column(
@@ -80,19 +97,82 @@ fun TaskCard(
 @Preview
 @Composable
 fun TaskCardPreview() {
-    DealDoneTheme{
-        TaskCard(
-            task = TaskInfo(
-                ID = UUID.randomUUID(),
-                name = "Test Task",
-                description = "Task for a testing a preview of this task with long text example lorem",
-                targetDate = Calendar.getInstance(),
-                parentTaskID = UUID.randomUUID(),
-                taskPriority = TaskPriority.LOW,
-                taskStatus = TaskStatus.IN_PROGRESS
-            ),
-            modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.medium_padding))
-        )
+    DealDoneTheme(darkTheme = false){
+        Column {
+            TaskCard(
+                task = TaskInfo(
+                    ID = UUID.randomUUID(),
+                    name = "Low Task In_Progress",
+                    description = "Task for a testing a preview of this task with long text example lorem",
+                    targetDate = Calendar.getInstance(),
+                    parentTaskID = UUID.randomUUID(),
+                    taskPriority = TaskPriority.LOW,
+                    taskStatus = TaskStatus.IN_PROGRESS
+                ),
+                onClick = {},
+                modifier = Modifier
+                    .padding(dimensionResource(id = R.dimen.medium_padding))
+            )
+
+            TaskCard(
+                task = TaskInfo(
+                    ID = UUID.randomUUID(),
+                    name = "Medium Task In_Progress",
+                    description = "Task for a testing a preview of this task with long text example lorem",
+                    targetDate = Calendar.getInstance(),
+                    parentTaskID = UUID.randomUUID(),
+                    taskPriority = TaskPriority.MEDIUM,
+                    taskStatus = TaskStatus.IN_PROGRESS
+                ),
+                onClick = {},
+                modifier = Modifier
+                    .padding(dimensionResource(id = R.dimen.medium_padding))
+            )
+
+            TaskCard(
+                task = TaskInfo(
+                    ID = UUID.randomUUID(),
+                    name = "High Task In_Progress",
+                    description = "Task for a testing a preview of this task with long text example lorem",
+                    targetDate = Calendar.getInstance(),
+                    parentTaskID = UUID.randomUUID(),
+                    taskPriority = TaskPriority.HIGH,
+                    taskStatus = TaskStatus.IN_PROGRESS
+                ),
+                onClick = {},
+                modifier = Modifier
+                    .padding(dimensionResource(id = R.dimen.medium_padding))
+            )
+
+            TaskCard(
+                task = TaskInfo(
+                    ID = UUID.randomUUID(),
+                    name = "Expired Task",
+                    description = "Task for a testing a preview of this task with long text example lorem",
+                    targetDate = Calendar.getInstance(),
+                    parentTaskID = UUID.randomUUID(),
+                    taskPriority = TaskPriority.MEDIUM,
+                    taskStatus = TaskStatus.EXPIRED
+                ),
+                onClick = {},
+                modifier = Modifier
+                    .padding(dimensionResource(id = R.dimen.medium_padding))
+            )
+
+            TaskCard(
+                task = TaskInfo(
+                    ID = UUID.randomUUID(),
+                    name = "Completed Task",
+                    description = "Task for a testing a preview of this task with long text example lorem",
+                    targetDate = Calendar.getInstance(),
+                    parentTaskID = UUID.randomUUID(),
+                    taskPriority = TaskPriority.HIGH,
+                    taskStatus = TaskStatus.COMPLETED
+                ),
+                onClick = {},
+                modifier = Modifier
+                    .padding(dimensionResource(id = R.dimen.medium_padding))
+            )
+        }
     }
 }
