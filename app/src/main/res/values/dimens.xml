@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="small_padding">4dp</dimen>
-    <dimen name="medium_padding">8dp</dimen>
-    <dimen name="large_padding">12dp</dimen>
+    <dimen name="extra_small_padding">8dp</dimen>
+    <dimen name="small_padding">8dp</dimen>
+    <dimen name="medium_padding">12dp</dimen>
+    <dimen name="large_padding">16dp</dimen>
+    <dimen name="extra_large_padding">24dp</dimen>
+
+    <dimen name="small_elevation">4dp</dimen>
+    <dimen name="medium_elevation">8dp</dimen>
+    <dimen name="large_elevation">12dp</dimen>
+
+    <dimen name="zero_cornerRadius">0dp</dimen>
+    <dimen name="small_cornerRadius">8dp</dimen>
+    <dimen name="medium_cornerRadius">16dp</dimen>
+    <dimen name="large_cornerRadius">24dp</dimen>
 </resources>
