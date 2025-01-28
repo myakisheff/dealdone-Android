@@ -33,6 +33,11 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.UUID
 
+/**
+ *  A card containing information about the task
+ *
+ *  @param task [TaskInfo] present an information of the task
+ */
 @Composable
 fun TaskCard(
     task: TaskInfo,
