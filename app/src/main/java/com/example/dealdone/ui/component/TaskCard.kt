@@ -19,18 +19,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.dealdone.R
-import com.example.dealdone.data.TaskInfo
-import com.example.dealdone.data.TaskPriority
-import com.example.dealdone.data.TaskStatus
+import com.example.dealdone.data.extensions.formatToDateString
+import com.example.dealdone.data.model.TaskInfo
+import com.example.dealdone.data.model.TaskPriority
+import com.example.dealdone.data.model.TaskStatus
 import com.example.dealdone.ui.theme.DealDoneTheme
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 import java.util.UUID
 
 /**
@@ -44,9 +42,6 @@ fun TaskCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val dateFormat = SimpleDateFormat(stringResource(R.string.date_pattern), Locale.getDefault())
-    val date = dateFormat.format(task.targetDate.time).toString()
-
     var color = when(task.taskPriority) {
         TaskPriority.LOW -> colorResource(R.color.Low_priority)
         TaskPriority.MEDIUM -> colorResource(R.color.Medium_priority)
@@ -84,7 +79,7 @@ fun TaskCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = date,
+                    text = task.targetDate.formatToDateString(),
                     style = typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.small_padding)))
@@ -106,7 +101,7 @@ fun TaskCardPreview() {
         Column {
             TaskCard(
                 task = TaskInfo(
-                    ID = UUID.randomUUID(),
+                    id = UUID.randomUUID(),
                     name = "Low Task In_Progress",
                     description = "Task for a testing a preview of this task with long text example lorem",
                     targetDate = Calendar.getInstance(),
@@ -121,7 +116,7 @@ fun TaskCardPreview() {
 
             TaskCard(
                 task = TaskInfo(
-                    ID = UUID.randomUUID(),
+                    id = UUID.randomUUID(),
                     name = "Medium Task In_Progress",
                     description = "Task for a testing a preview of this task with long text example lorem",
                     targetDate = Calendar.getInstance(),
@@ -136,7 +131,7 @@ fun TaskCardPreview() {
 
             TaskCard(
                 task = TaskInfo(
-                    ID = UUID.randomUUID(),
+                    id = UUID.randomUUID(),
                     name = "High Task In_Progress",
                     description = "Task for a testing a preview of this task with long text example lorem",
                     targetDate = Calendar.getInstance(),
@@ -151,7 +146,7 @@ fun TaskCardPreview() {
 
             TaskCard(
                 task = TaskInfo(
-                    ID = UUID.randomUUID(),
+                    id = UUID.randomUUID(),
                     name = "Expired Task",
                     description = "Task for a testing a preview of this task with long text example lorem",
                     targetDate = Calendar.getInstance(),
@@ -166,7 +161,7 @@ fun TaskCardPreview() {
 
             TaskCard(
                 task = TaskInfo(
-                    ID = UUID.randomUUID(),
+                    id = UUID.randomUUID(),
                     name = "Completed Task",
                     description = "Task for a testing a preview of this task with long text example lorem",
                     targetDate = Calendar.getInstance(),
