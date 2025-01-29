@@ -64,6 +64,17 @@ class TaskViewModel(
         }
     }
 
+    fun deselectTask() {
+        stackOfTasks.clear()
+
+        _currentTaskUiState.update {
+            it.copy(
+                isExpanded = false,
+                selectedTask = null
+            )
+        }
+    }
+
     fun getSubtasks() : List<TaskInfo> {
         return buildList {
             tasks.forEach {
