@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">DealDone</string>
-    <string name="task_collapse">Свернуть</string>
-    <string name="task_expand">Развернуть</string>
+    <string name="task_collapse">Collapse</string>
+    <string name="task_expand">Expand</string>
     <string name="back">Back</string>
-    <string name="tasks">Задачи</string>
+    <string name="tasks">Tasks</string>
+    <string name="task_list">Task list</string>
+    <string name="create_new_task">New task</string>
+    <string name="settings">Settings</string>
+    <string name="home">Home</string>
 </resources>
