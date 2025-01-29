@@ -1,5 +1,7 @@
 package com.example.dealdone.ui
 
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -20,6 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -29,6 +33,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.dealdone.R
 import com.example.dealdone.ui.component.NavigationItemContent
+import com.example.dealdone.ui.screen.newtask.NewTaskScreen
 import com.example.dealdone.ui.screen.task.TaskScreen
 import com.example.dealdone.ui.screen.task.TaskViewModel
 
@@ -37,8 +42,9 @@ fun DealDoneApp() {
     val navController: NavHostController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
 
-    val viewModel: TaskViewModel = viewModel()
-    val taskUiState = viewModel.currentTaskUiState.collectAsState().value
+    val taskViewModel: TaskViewModel = viewModel()
+    val taskUiState = taskViewModel.currentTaskUiState.collectAsState().value
+    val newTaskUiState = taskViewModel.newTaskUiState.collectAsState().value
 
     val currentScreen = DealDoneScreen.valueOf(
         backStackEntry?.destination?.route ?: DealDoneScreen.TASK_LIST.name
@@ -73,8 +79,8 @@ fun DealDoneApp() {
             DealDoneTopBar(
                 title = title,
                 canNavigateBack = taskUiState.selectedTask != null && currentScreen == DealDoneScreen.TASK_LIST,
-                onBackClick = viewModel::selectPreviousTask,
-                onHomeClick = viewModel::deselectTask
+                onBackClick = taskViewModel::selectPreviousTask,
+                onHomeClick = taskViewModel::deselectTask
             )
         },
         bottomBar = {
@@ -95,15 +101,30 @@ fun DealDoneApp() {
             composable(route = DealDoneScreen.TASK_LIST.name) {
                 TaskScreen(
                     taskUiState = taskUiState,
-                    onTaskClick = { viewModel.selectTask(it) },
-                    expandTask = viewModel::expandCurrentTask,
-                    subtasks = viewModel.getSubtasks(),
+                    onTaskClick = { taskViewModel.selectTask(it) },
+                    expandTask = taskViewModel::expandCurrentTask,
+                    subtasks = taskViewModel.getSubtasks(),
                     modifier = Modifier.padding(innerPadding)
                 )
             }
 
             composable(route = DealDoneScreen.TASK_CREATION.name) {
-                Text(text = "Create new task")
+                NewTaskScreen(
+                    isFastCreation = newTaskUiState.isFastModeOfCreationTask,
+                    onCreatePressed = taskViewModel::addNewTask,
+                    onChangeModePressed = { taskViewModel.updateNewTaskMode(it) },
+                    onFastCreationTextChanged = { taskViewModel.updateNewTaskText(it) },
+                    fastCreationText = newTaskUiState.fastCreationTaskText,
+                    modifier = Modifier.padding(
+                        top = innerPadding.calculateTopPadding(),
+                        start = innerPadding.calculateStartPadding(layoutDirection = LocalLayoutDirection.current)
+                                + dimensionResource(R.dimen.small_padding),
+                        end = innerPadding.calculateEndPadding(layoutDirection = LocalLayoutDirection.current)
+                                + dimensionResource(R.dimen.small_padding),
+                        bottom = innerPadding.calculateBottomPadding()
+
+                    )
+                )
             }
 
             composable(route = DealDoneScreen.SETTINGS.name) {
