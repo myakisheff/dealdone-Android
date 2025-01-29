@@ -16,4 +16,8 @@
     <dimen name="large_cornerRadius">24dp</dimen>
 
     <dimen name="icon_size">25dp</dimen>
+
+    <dimen name="small_thickness">1dp</dimen>
+    <dimen name="medium_thickness">2dp</dimen>
+    <dimen name="large_thickness">4dp</dimen>
 </resources>
