@@ -14,4 +14,6 @@
     <dimen name="small_cornerRadius">8dp</dimen>
     <dimen name="medium_cornerRadius">16dp</dimen>
     <dimen name="large_cornerRadius">24dp</dimen>
+
+    <dimen name="icon_size">25dp</dimen>
 </resources>

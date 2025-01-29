@@ -2,4 +2,6 @@
     <string name="app_name">DealDone</string>
     <string name="task_collapse">Свернуть</string>
     <string name="task_expand">Развернуть</string>
+    <string name="back">Back</string>
+    <string name="tasks">Задачи</string>
 </resources>
