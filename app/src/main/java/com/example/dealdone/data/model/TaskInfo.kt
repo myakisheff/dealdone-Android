@@ -8,7 +8,7 @@ data class TaskInfo(
     val id: UUID,
     val name: String,
     val description: String,
-    val targetDate: Calendar,
+    val targetDate: Calendar?,
     val taskPriority: TaskPriority,
     val taskStatus: TaskStatus,
     val parentTaskID: UUID?,
