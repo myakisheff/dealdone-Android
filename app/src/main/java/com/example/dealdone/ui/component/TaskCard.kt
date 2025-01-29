@@ -87,7 +87,7 @@ fun TaskCard(
                 Image(
                     painter = painterResource(id = R.drawable.target_icon),
                     contentDescription = null,
-                    modifier = Modifier.size(25.dp)
+                    modifier = Modifier.size(dimensionResource(R.dimen.icon_size))
                 )
             }
         }
