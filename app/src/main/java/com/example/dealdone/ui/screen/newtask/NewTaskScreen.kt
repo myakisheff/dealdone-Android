@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -113,7 +115,7 @@ fun FastCreationTask(
     Column(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.small_padding)),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
+        modifier = modifier.verticalScroll(rememberScrollState())
     ) {
         TextField(
             value = text,
@@ -125,6 +127,8 @@ fun FastCreationTask(
         Button(onClick = onCreatePressed) {
             Text(text = stringResource(R.string.create_task))
         }
+
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.extra_large_padding)))
     }
 }
 
@@ -134,7 +138,9 @@ fun DefaultCreationTask(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.small_padding)),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.verticalScroll(rememberScrollState())
     ) {
 
 
