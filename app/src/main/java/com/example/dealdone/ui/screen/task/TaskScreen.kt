@@ -5,23 +5,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,72 +36,42 @@ fun TaskScreen(
     subtasks: List<TaskInfo>,
     onTaskClick: (UUID) -> Unit,
     expandTask: () -> Unit,
-    onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Scaffold(
-        topBar = { TaskScreenTopBar(
-            taskName = taskUiState.selectedTask?.name ?: stringResource(R.string.tasks),
-            canNavigateBack = taskUiState.selectedTask != null,
-            onBackClick = onBackClick
-        ) }
-    ) { innerPadding ->
-        LazyColumn(
-            modifier = modifier
-                .padding(innerPadding)
-                .padding(dimensionResource(R.dimen.small_padding))
-        ) {
-            if(taskUiState.selectedTask != null){
-                item {
-                    CurrentTaskInformation(
-                        currentTask = taskUiState.selectedTask,
-                        isExpanded = taskUiState.isExpanded,
-                        expandClick = expandTask
-                    )
-                }
-            }
-
-            items(subtasks) { task ->
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.medium_padding)))
-                TaskCard(
-                    task = task,
-                    onClick = { onTaskClick(task.id) }
+    LazyColumn(
+        modifier = modifier
+            .padding(dimensionResource(R.dimen.small_padding))
+            .fillMaxHeight()
+    ) {
+        if(taskUiState.selectedTask != null){
+            item {
+                CurrentTaskInformation(
+                    currentTask = taskUiState.selectedTask,
+                    isExpanded = taskUiState.isExpanded,
+                    expandClick = expandTask
                 )
             }
         }
-    }
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TaskScreenTopBar(
-    taskName: String,
-    canNavigateBack: Boolean,
-    onBackClick: () -> Unit
-) {
-    TopAppBar(
-        title = { Text(text = taskName)},
-        navigationIcon = {
-            if(canNavigateBack) {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = stringResource(R.string.back)
-                    )
-                }
-            }
+        items(subtasks) { task ->
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.medium_padding)))
+            TaskCard(
+                task = task,
+                onClick = { onTaskClick(task.id) }
+            )
         }
-    )
+    }
 }
 
 @Composable
 fun CurrentTaskInformation(
     currentTask: TaskInfo,
     isExpanded: Boolean,
-    expandClick: () -> Unit
+    expandClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable { expandClick() },
         elevation = CardDefaults.cardElevation(
@@ -187,7 +151,6 @@ fun TaskScreenPreview() {
             taskUiState = TaskUiState(),
             expandTask = {},
             onTaskClick = {},
-            onBackClick = {},
             subtasks = TasksMock.getRandomTask(number = 7)
         )
     }
