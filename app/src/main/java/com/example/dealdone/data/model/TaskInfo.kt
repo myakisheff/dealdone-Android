@@ -1,5 +1,6 @@
 package com.example.dealdone.data.model
 
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import java.util.Calendar
 import java.util.UUID
 
@@ -10,22 +11,34 @@ data class TaskInfo(
     val targetDate: Calendar,
     val taskPriority: TaskPriority,
     val taskStatus: TaskStatus,
-    val parentTaskID: UUID,
+    val parentTaskID: UUID?,
 )
 
-object ExampleTasks {
-    fun getRandomTask(): TaskInfo {
-        val randomStatus = TaskStatus.entries.shuffled().first()
-        val randomPriority = TaskPriority.entries.shuffled().first()
+object TasksMock {
+    fun getRandomTask(number: Int = 1): List<TaskInfo> {
+        val generatedIds = buildList<UUID> {
+            repeat(number) {
+                add(UUID.randomUUID())
+            }
+        }
 
-        return TaskInfo(
-            id = UUID.randomUUID(),
-            name = "${randomStatus.name} Task - ${randomPriority.name}",
-            description = "Task for a testing a preview of this task with long text example lorem ipsum dolor sit amet",
-            targetDate = Calendar.getInstance(),
-            parentTaskID = UUID.randomUUID(),
-            taskPriority = randomPriority,
-            taskStatus = randomStatus
-        )
+        return buildList {
+            repeat(number) { index ->
+                val randomStatus = TaskStatus.entries.shuffled().first()
+                val randomPriority = TaskPriority.entries.shuffled().first()
+
+                add(
+                    TaskInfo(
+                        id = generatedIds[index],
+                        name = "${randomStatus.name} Task - ${randomPriority.name}",
+                        description = LoremIpsum(words = 150).values.shuffled().joinToString(separator = " "),
+                        targetDate = Calendar.getInstance(),
+                        parentTaskID = if((1..4).random() == 1) null else generatedIds.random(),
+                        taskPriority = randomPriority,
+                        taskStatus = randomStatus
+                    )
+                )
+            }
+        }
     }
 }
