@@ -9,6 +9,7 @@ data class TaskInfo(
     val name: String,
     val description: String,
     val targetDate: Calendar?,
+    val creationDate: Calendar = Calendar.getInstance(),
     val taskPriority: TaskPriority,
     val taskStatus: TaskStatus,
     val parentTaskID: UUID?,
@@ -32,9 +33,10 @@ object TasksMock {
                         id = generatedIds[index],
                         name = "${randomStatus.name} Task - ${randomPriority.name}",
                         description = LoremIpsum(words = 150).values.shuffled().joinToString(separator = " "),
-                        targetDate = Calendar.getInstance(),
+                        targetDate = Calendar.getInstance().apply { this.set(Calendar.DAY_OF_MONTH, this.get(Calendar.DAY_OF_MONTH) + (1..4).random()) },
                         parentTaskID = if((1..4).random() == 1) null else generatedIds.random(),
                         taskPriority = randomPriority,
+                        creationDate = Calendar.getInstance(),
                         taskStatus = randomStatus
                     )
                 )
