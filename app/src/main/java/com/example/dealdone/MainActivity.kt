@@ -3,7 +3,7 @@ package com.example.dealdone
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.dealdone.ui.DealDoneApp
+import com.example.dealdone.ui.DealDoneAppDynamicTheme
 import com.example.dealdone.ui.theme.DealDoneTheme
 
 class MainActivity : ComponentActivity() {
@@ -11,7 +11,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             DealDoneTheme {
-                DealDoneApp()
+                DealDoneAppDynamicTheme()
             }
         }
     }

@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -35,15 +37,37 @@ import com.example.dealdone.R
 import com.example.dealdone.ui.component.NavigationItemContent
 import com.example.dealdone.ui.screen.newtask.NewTaskScreen
 import com.example.dealdone.ui.screen.newtask.NewTaskViewModel
+import com.example.dealdone.ui.screen.settings.SettingsScreen
+import com.example.dealdone.ui.screen.settings.SettingsViewModel
 import com.example.dealdone.ui.screen.task.TaskScreen
 import com.example.dealdone.ui.screen.task.TaskViewModel
+import com.example.dealdone.ui.theme.DealDoneDynamicTheme
+import com.example.dealdone.ui.theme.ThemeViewModel
+
+
+@Composable
+fun DealDoneAppDynamicTheme() {
+    val themeViewModel: ThemeViewModel = viewModel()
+    val themeState = themeViewModel.themeState.collectAsState().value
+
+    themeViewModel.changeThemeColorIfUnspecified(MaterialTheme.colorScheme.primary)
+
+    DealDoneDynamicTheme(
+        state = themeState.dynamicThemeState
+    ) {
+        DealDoneApp(
+            onThemeColorChange = themeViewModel::changeThemeColor
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DealDoneApp() {
+fun DealDoneApp(
+    onThemeColorChange: (Color) -> Unit,
+) {
     val navController: NavHostController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
-
 
     val taskViewModel: TaskViewModel = viewModel()
     val taskUiState = taskViewModel.currentTaskUiState.collectAsState().value
@@ -51,6 +75,9 @@ fun DealDoneApp() {
     val newTaskViewModel: NewTaskViewModel = viewModel()
     val newTaskUiState = newTaskViewModel.newTaskUiState.collectAsState().value
     val newDefaultTaskUiState = newTaskViewModel.newDefaultTaskUiState.collectAsState().value
+
+    val settingsViewModel: SettingsViewModel = viewModel()
+    val settingsUiState = settingsViewModel.settingsUiState.collectAsState().value
 
     val currentScreen = DealDoneScreen.valueOf(
         backStackEntry?.destination?.route ?: DealDoneScreen.TASK_LIST.name
@@ -173,7 +200,28 @@ fun DealDoneApp() {
             }
 
             composable(route = DealDoneScreen.SETTINGS.name) {
-                Text(text = "Settings")
+                SettingsScreen(
+                    keyValue = settingsUiState.keyValue,
+                    onKeyValueChanged = settingsViewModel::onStorageKeyChanged,
+                    isKeyVisible = settingsUiState.isKeyVisible,
+                    changeKeyVisibility = settingsViewModel::changeKeyVisibility,
+                    onChangeThemeColorClick = settingsViewModel::showColorPicker,
+                    isColorPickerVisible = settingsUiState.isColorPickerVisible,
+                    onColorPickerDismiss = settingsViewModel::hideColorPicker,
+                    changeThemeColor = { color ->
+                        settingsViewModel.hideColorPicker()
+                        onThemeColorChange(color)
+                    },
+                    modifier = Modifier.padding(
+                        top = innerPadding.calculateTopPadding(),
+                        start = innerPadding.calculateStartPadding(layoutDirection = LocalLayoutDirection.current)
+                                + dimensionResource(R.dimen.small_padding),
+                        end = innerPadding.calculateEndPadding(layoutDirection = LocalLayoutDirection.current)
+                                + dimensionResource(R.dimen.small_padding),
+                        bottom = innerPadding.calculateBottomPadding()
+
+                    )
+                )
             }
         }
     }

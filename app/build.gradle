@@ -49,6 +49,8 @@ android {
 
 dependencies {
 
+    implementation(files("libs/material-color-util.jar"))
+
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
@@ -56,23 +58,27 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7")
 
-    implementation("androidx.navigation:navigation-compose:2.8.5")
+    implementation("androidx.navigation:navigation-compose:2.8.6")
+
+    implementation 'io.mhssn:colorpicker:1.0.0'
+    implementation "androidx.compose.material:material-icons-extended:1.7.7"
 
     implementation 'androidx.core:core-ktx:1.15.0'
     implementation platform('org.jetbrains.kotlin:kotlin-bom:2.1.10')
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
     implementation 'androidx.activity:activity-compose:1.10.0'
-    implementation platform('androidx.compose:compose-bom:2025.01.00')
+    implementation platform('androidx.compose:compose-bom:2025.01.01')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
-    implementation 'androidx.compose.ui:ui-text-google-fonts:1.8.0-alpha08'
-    implementation 'androidx.compose.foundation:foundation-layout-android:1.7.6'
+    implementation 'androidx.compose.ui:ui-text-google-fonts:1.8.0-beta01'
+    implementation 'androidx.compose.foundation:foundation-layout-android:1.7.7'
+    implementation 'androidx.test.espresso:espresso-core:3.6.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-    androidTestImplementation platform('androidx.compose:compose-bom:2025.01.00')
+    androidTestImplementation platform('androidx.compose:compose-bom:2025.01.01')
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
