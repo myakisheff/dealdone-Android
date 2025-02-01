@@ -10,10 +10,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.dealdone.DealDoneApplication
 import com.example.dealdone.data.model.TaskInfo
-import com.example.dealdone.data.model.TaskPriority
-import com.example.dealdone.data.model.TaskStatus
 import com.example.dealdone.data.model.TasksMock
-import com.example.dealdone.ui.screen.newtask.NewTaskUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -31,9 +28,6 @@ class TaskViewModel(
 
     private var tasks by mutableStateOf(emptyList<TaskInfo>())
     private val stackOfPreviousTasks: Stack<UUID> = Stack()
-
-    private val _newTaskUiState = MutableStateFlow(NewTaskUiState())
-    val newTaskUiState: StateFlow<NewTaskUiState> = _newTaskUiState
 
     init {
         getTasks()
@@ -93,55 +87,14 @@ class TaskViewModel(
         }
     }
 
-    fun addNewTask() {
-        if(newTaskUiState.value.isFastModeOfCreationTask) {
-            newTaskUiState.value.fastCreationTaskText.split("\n").forEach { taskText ->
-                tasks = tasks + generateNewFastTask(taskText)
-            }
-
-            _newTaskUiState.update {
-                it.copy(
-                    fastCreationTaskText = ""
-                )
-            }
-        }
-        else {
-
-        }
+    fun addNewTasks(newTasks: List<TaskInfo>) {
+        tasks += newTasks
     }
 
     private fun getTasks() {
         tasks = TasksMock.getRandomTask(15)
 
         // TODO: get tasks from repository
-    }
-
-    private fun generateNewFastTask(taskText: String) : TaskInfo {
-        return TaskInfo(
-            id = UUID.randomUUID(),
-            parentTaskID = currentTaskUiState.value.selectedTask?.id,
-            name = taskText.substringBefore(" "),
-            description = taskText,
-            targetDate = currentTaskUiState.value.selectedTask?.targetDate,
-            taskPriority = currentTaskUiState.value.selectedTask?.taskPriority ?: TaskPriority.LOW,
-            taskStatus = currentTaskUiState.value.selectedTask?.taskStatus ?: TaskStatus.IN_PROGRESS,
-        )
-    }
-
-    fun updateNewTaskMode(isFast: Boolean) {
-        _newTaskUiState.update {
-            it.copy(
-                isFastModeOfCreationTask = isFast
-            )
-        }
-    }
-
-    fun updateNewTaskText(newText: String) {
-        _newTaskUiState.update {
-            it.copy(
-                fastCreationTaskText = newText
-            )
-        }
     }
 
     companion object {
