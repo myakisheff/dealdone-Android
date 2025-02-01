@@ -21,4 +21,6 @@
     <dimen name="small_thickness">1dp</dimen>
     <dimen name="medium_thickness">2dp</dimen>
     <dimen name="large_thickness">4dp</dimen>
+
+    <dimen name="color_preview_size">40dp</dimen>
 </resources>

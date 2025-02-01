@@ -23,4 +23,8 @@
     <string name="select_time">Select Time</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="enter_key">Enter key</string>
+    <string name="hide_key">Hide key</string>
+    <string name="show_key">Show key</string>
+    <string name="current_theme_color">Current theme color</string>
 </resources>
