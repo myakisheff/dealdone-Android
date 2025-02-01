@@ -34,17 +34,23 @@ import androidx.navigation.compose.rememberNavController
 import com.example.dealdone.R
 import com.example.dealdone.ui.component.NavigationItemContent
 import com.example.dealdone.ui.screen.newtask.NewTaskScreen
+import com.example.dealdone.ui.screen.newtask.NewTaskViewModel
 import com.example.dealdone.ui.screen.task.TaskScreen
 import com.example.dealdone.ui.screen.task.TaskViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DealDoneApp() {
     val navController: NavHostController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
 
+
     val taskViewModel: TaskViewModel = viewModel()
     val taskUiState = taskViewModel.currentTaskUiState.collectAsState().value
-    val newTaskUiState = taskViewModel.newTaskUiState.collectAsState().value
+
+    val newTaskViewModel: NewTaskViewModel = viewModel()
+    val newTaskUiState = newTaskViewModel.newTaskUiState.collectAsState().value
+    val newDefaultTaskUiState = newTaskViewModel.newDefaultTaskUiState.collectAsState().value
 
     val currentScreen = DealDoneScreen.valueOf(
         backStackEntry?.destination?.route ?: DealDoneScreen.TASK_LIST.name
@@ -111,10 +117,49 @@ fun DealDoneApp() {
             composable(route = DealDoneScreen.TASK_CREATION.name) {
                 NewTaskScreen(
                     isFastCreation = newTaskUiState.isFastModeOfCreationTask,
-                    onCreatePressed = taskViewModel::addNewTask,
-                    onChangeModePressed = { taskViewModel.updateNewTaskMode(it) },
-                    onFastCreationTextChanged = { taskViewModel.updateNewTaskText(it) },
+                    onCreatePressed = {
+                        taskViewModel.addNewTasks(
+                            newTaskViewModel.addNewTask(
+                                currentTaskUiState = taskUiState
+                            )
+                        )
+                    },
+                    onChangeModePressed = { isFastMode ->
+                        newTaskViewModel.updateNewTaskMode(
+                            isFastMode
+                        )
+                    },
+                    onFastCreationTextChanged = { fastText ->
+                        newTaskViewModel.updateNewTaskText(
+                            fastText
+                        )
+                    },
                     fastCreationText = newTaskUiState.fastCreationTaskText,
+                    defaultTaskUiState = newDefaultTaskUiState,
+                    onDefaultTaskTitleChanged = { defaultTitle ->
+                        newTaskViewModel.changeDefaultTaskTitle(
+                            defaultTitle
+                        )
+                    },
+                    onDefaultTaskDescriptionChanged = { defaultDescription ->
+                        newTaskViewModel.changeDefaultDescription(
+                            defaultDescription
+                        )
+                    },
+                    onChangeSelectedPriority = { defaultTaskPriority ->
+                        newTaskViewModel.changeDefaultPriority(
+                            defaultTaskPriority
+                        )
+                    },
+                    onChangeInfinityTime = {isInfinity ->
+                        newTaskViewModel.changeInfinityTime(isInfinity)
+                    },
+                    onTimeConfirm = newTaskViewModel::changeTime,
+                    onTimeDismiss = newTaskViewModel::hideTimePicker,
+                    onDatePickerClick = newTaskViewModel::showDatePicker,
+                    onTimePickerClick = newTaskViewModel::showTimePicker,
+                    onDateConfirm = newTaskViewModel::changeDate,
+                    onDateDismiss = newTaskViewModel::hideDatePicker,
                     modifier = Modifier.padding(
                         top = innerPadding.calculateTopPadding(),
                         start = innerPadding.calculateStartPadding(layoutDirection = LocalLayoutDirection.current)

@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,8 +23,12 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.dealdone.R
+import com.example.dealdone.data.model.TaskPriority
+import com.example.dealdone.ui.component.CustomDropdownMenu
+import com.example.dealdone.ui.component.DateTimePicker
 import com.example.dealdone.ui.theme.DealDoneTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewTaskScreen(
     onCreatePressed: () -> Unit,
@@ -30,6 +36,17 @@ fun NewTaskScreen(
     isFastCreation: Boolean,
     fastCreationText: String,
     onFastCreationTextChanged: (String) -> Unit,
+    defaultTaskUiState: NewDefaultTaskUiState,
+    onDefaultTaskTitleChanged: (String) -> Unit,
+    onDefaultTaskDescriptionChanged: (String) -> Unit,
+    onChangeSelectedPriority: (TaskPriority) -> Unit,
+    onChangeInfinityTime: (Boolean) -> Unit,
+    onTimeConfirm: (TimePickerState) -> Unit,
+    onTimeDismiss: () -> Unit,
+    onDateConfirm: (Long?) -> Unit,
+    onDateDismiss: () -> Unit,
+    onTimePickerClick: () -> Unit,
+    onDatePickerClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -51,7 +68,18 @@ fun NewTaskScreen(
             )
         } else {
             DefaultCreationTask(
-                onCreatePressed = onCreatePressed
+                onCreatePressed = onCreatePressed,
+                taskUiState = defaultTaskUiState,
+                onTitleChanged = onDefaultTaskTitleChanged,
+                onDescriptionChanged = onDefaultTaskDescriptionChanged,
+                onChangeSelectedPriority = onChangeSelectedPriority,
+                onTimeConfirm = onTimeConfirm,
+                onTimeDismiss = onTimeDismiss,
+                onDatePickerClick = onDatePickerClick,
+                onTimePickerClick = onTimePickerClick,
+                onDateConfirm = onDateConfirm,
+                onDateDismiss = onDateDismiss,
+                onChangeInfinityTime = onChangeInfinityTime
             )
         }
     }
@@ -113,7 +141,7 @@ fun FastCreationTask(
     modifier: Modifier = Modifier
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.small_padding)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.medium_padding)),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.verticalScroll(rememberScrollState())
     ) {
@@ -132,17 +160,62 @@ fun FastCreationTask(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DefaultCreationTask(
     onCreatePressed: () -> Unit,
+    taskUiState: NewDefaultTaskUiState,
+    onTitleChanged: (String) -> Unit,
+    onDescriptionChanged: (String) -> Unit,
+    onChangeSelectedPriority: (TaskPriority) -> Unit,
+    onChangeInfinityTime: (Boolean) -> Unit,
+    onTimeConfirm: (TimePickerState) -> Unit,
+    onTimeDismiss: () -> Unit,
+    onDateConfirm: (Long?) -> Unit,
+    onDateDismiss: () -> Unit,
+    onTimePickerClick: () -> Unit,
+    onDatePickerClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.small_padding)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.medium_padding)),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.verticalScroll(rememberScrollState())
     ) {
+        TextField(
+            value = taskUiState.creationTask.name,
+            onValueChange = onTitleChanged,
+            label = { Text(text = stringResource(R.string.enter_task_title) ) },
+            modifier = Modifier.fillMaxWidth()
+        )
 
+        CustomDropdownMenu(
+            selectedItem = stringResource(taskUiState.creationTask.taskPriority.title),
+            listItems = TaskPriority.entries.map { item -> Pair(item, stringResource(item.title)) },
+            onChangeSelectedItem = onChangeSelectedPriority,
+        )
+
+        DateTimePicker(
+            isInfinityTime = taskUiState.isInfinityTime,
+            onInfinityTimeChanged = onChangeInfinityTime,
+            currentCalendar = taskUiState.creationTask.targetDate,
+            onTimeConfirm = onTimeConfirm,
+            onTimeDismiss = onTimeDismiss,
+            onDatePickerClick = onDatePickerClick,
+            onTimePickerClick = onTimePickerClick,
+            isShowingDatePicker = taskUiState.isDatePickerShowing,
+            isShowingTimePicker = taskUiState.isTimePickerShowing,
+            onDateConfirm = onDateConfirm,
+            onDateDismiss = onDateDismiss,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        TextField(
+            value = taskUiState.creationTask.description,
+            onValueChange = onDescriptionChanged,
+            label = { Text(text = stringResource(R.string.enter_task_description) ) },
+            modifier = Modifier.fillMaxWidth()
+        )
 
         Button(onClick = onCreatePressed) {
             Text(text = stringResource(R.string.create_task))
@@ -173,12 +246,32 @@ fun FastCreationTaskPreview() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun DefaultCreationTaskPreview() {
     DealDoneTheme {
         DefaultCreationTask(
-            onCreatePressed = {}
+            onCreatePressed = {},
+            taskUiState = NewDefaultTaskUiState(),
+            onTitleChanged = {},
+            onDescriptionChanged = {},
+            onChangeSelectedPriority = {},
+            onTimeConfirm = {},
+            onTimeDismiss = {},
+            onDatePickerClick = {},
+            onTimePickerClick = {},
+            onDateDismiss = {},
+            onDateConfirm = {},
+            onChangeInfinityTime = {}
         )
+    }
+}
+
+@Preview
+@Composable
+fun DatePickerPreview() {
+    DealDoneTheme {
+
     }
 }
