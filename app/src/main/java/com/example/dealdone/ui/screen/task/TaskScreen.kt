@@ -24,7 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.dealdone.R
-import com.example.dealdone.data.extensions.formatToDateString
+import com.example.dealdone.data.extensions.formatToDateTimeString
 import com.example.dealdone.data.model.TaskInfo
 import com.example.dealdone.data.model.TasksMock
 import com.example.dealdone.ui.component.TaskCard
@@ -107,7 +107,7 @@ fun CurrentTaskInformation(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = currentTask.targetDate?.formatToDateString() ?: stringResource(R.string.no_target_date),
+                    text = currentTask.targetDate?.formatToDateTimeString() ?: stringResource(R.string.no_target_date),
                     style = MaterialTheme.typography.bodySmall
                 )
                 Column {

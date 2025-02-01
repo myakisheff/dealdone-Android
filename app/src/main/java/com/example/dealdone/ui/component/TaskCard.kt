@@ -24,7 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.dealdone.R
-import com.example.dealdone.data.extensions.formatToDateString
+import com.example.dealdone.data.extensions.formatToDateTimeString
 import com.example.dealdone.data.model.TaskInfo
 import com.example.dealdone.data.model.TaskPriority
 import com.example.dealdone.data.model.TaskStatus
@@ -80,7 +80,7 @@ fun TaskCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = task.targetDate?.formatToDateString() ?: stringResource(R.string.no_target_date),
+                    text = task.targetDate?.formatToDateTimeString() ?: stringResource(R.string.no_target_date),
                     style = typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.small_padding)))
