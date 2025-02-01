@@ -13,4 +13,14 @@
     <string name="no_target_date">infinity</string>
     <string name="create_task">Create task</string>
     <string name="fast_creation_task_label">Enter each task on a new line</string>
+    <string name="enter_task_title">Enter task title</string>
+    <string name="enter_task_description">Enter task description</string>
+    <string name="select_priority">Select priority</string>
+    <string name="low_priority">Low</string>
+    <string name="medium_priority">Medium</string>
+    <string name="high_priority">High</string>
+    <string name="no_deadline">No deadline</string>
+    <string name="select_time">Select Time</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
 </resources>
