@@ -93,7 +93,7 @@ fun DealDoneApp(
     val navController: NavHostController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
 
-    val taskViewModel: TaskViewModel = viewModel()
+    val taskViewModel: TaskViewModel = viewModel(factory = TaskViewModel.Factory)
     val taskUiState = taskViewModel.currentTaskUiState.collectAsState().value
 
     val newTaskViewModel: NewTaskViewModel = viewModel()
