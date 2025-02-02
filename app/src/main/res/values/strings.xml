@@ -27,4 +27,5 @@
     <string name="hide_key">Hide key</string>
     <string name="show_key">Show key</string>
     <string name="current_theme_color">Current theme color</string>
+    <string name="save_key">Save key</string>
 </resources>
