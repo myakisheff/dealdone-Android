@@ -22,8 +22,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -34,6 +36,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.dealdone.R
+import com.example.dealdone.data.repository.DataStoreManager
 import com.example.dealdone.ui.component.NavigationItemContent
 import com.example.dealdone.ui.screen.newtask.NewTaskScreen
 import com.example.dealdone.ui.screen.newtask.NewTaskViewModel
@@ -41,22 +44,40 @@ import com.example.dealdone.ui.screen.settings.SettingsScreen
 import com.example.dealdone.ui.screen.settings.SettingsViewModel
 import com.example.dealdone.ui.screen.task.TaskScreen
 import com.example.dealdone.ui.screen.task.TaskViewModel
+import com.example.dealdone.ui.theme.AppDataViewModel
+import com.example.dealdone.ui.theme.AppDataViewModelFactory
 import com.example.dealdone.ui.theme.DealDoneDynamicTheme
-import com.example.dealdone.ui.theme.ThemeViewModel
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun DealDoneAppDynamicTheme() {
-    val themeViewModel: ThemeViewModel = viewModel()
-    val themeState = themeViewModel.themeState.collectAsState().value
+    val appDataViewModel: AppDataViewModel = viewModel(
+        factory = AppDataViewModelFactory(DataStoreManager(LocalContext.current))
+    )
+    val appDataState = appDataViewModel.appDataState.collectAsState().value
 
-    themeViewModel.changeThemeColorIfUnspecified(MaterialTheme.colorScheme.primary)
+    val scope = rememberCoroutineScope()
+
+    appDataViewModel.changeThemeColorIfUnspecified(MaterialTheme.colorScheme.primary)
 
     DealDoneDynamicTheme(
-        state = themeState.dynamicThemeState
+        state = appDataState.dynamicThemeState
     ) {
         DealDoneApp(
-            onThemeColorChange = themeViewModel::changeThemeColor
+            accessKey = appDataState.accessKey,
+            onThemeColorChange = { color ->
+                appDataViewModel.changeThemeColor(color)
+                scope.launch {
+                    appDataViewModel.saveThemeColor()
+                }
+            },
+            onAccessKeySave = {
+                scope.launch {
+                    appDataViewModel.saveAccessKey()
+                }
+            },
+            accessKeyChanged = appDataViewModel::changeAccessKey
         )
     }
 }
@@ -64,7 +85,10 @@ fun DealDoneAppDynamicTheme() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DealDoneApp(
+    accessKey: String,
     onThemeColorChange: (Color) -> Unit,
+    onAccessKeySave: () -> Unit,
+    accessKeyChanged: (String) -> Unit,
 ) {
     val navController: NavHostController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -201,13 +225,14 @@ fun DealDoneApp(
 
             composable(route = DealDoneScreen.SETTINGS.name) {
                 SettingsScreen(
-                    keyValue = settingsUiState.keyValue,
-                    onKeyValueChanged = settingsViewModel::onStorageKeyChanged,
+                    keyValue = accessKey,
+                    onKeyValueChanged = accessKeyChanged,
                     isKeyVisible = settingsUiState.isKeyVisible,
                     changeKeyVisibility = settingsViewModel::changeKeyVisibility,
                     onChangeThemeColorClick = settingsViewModel::showColorPicker,
                     isColorPickerVisible = settingsUiState.isColorPickerVisible,
                     onColorPickerDismiss = settingsViewModel::hideColorPicker,
+                    saveKey = onAccessKeySave,
                     changeThemeColor = { color ->
                         settingsViewModel.hideColorPicker()
                         onThemeColorChange(color)

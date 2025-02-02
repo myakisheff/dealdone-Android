@@ -13,7 +13,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,10 +49,12 @@ fun SettingsScreen(
     changeThemeColor: (Color) -> Unit,
     isColorPickerVisible: Boolean,
     onColorPickerDismiss: () -> Unit,
+    saveKey: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.medium_padding)),
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
         TextField(
@@ -74,6 +78,29 @@ fun SettingsScreen(
                 }
             },
             modifier = Modifier.fillMaxWidth()
+        )
+
+        Button(
+            onClick = saveKey,
+            modifier = Modifier
+                .padding(
+                    top = dimensionResource(R.dimen.large_padding),
+                    bottom = dimensionResource(R.dimen.large_padding)
+                )
+        ) {
+            Text(
+                text = stringResource(R.string.save_key),
+                modifier = Modifier.padding(
+                    start = dimensionResource(R.dimen.large_padding),
+                    end = dimensionResource(R.dimen.large_padding),
+                )
+
+            )
+        }
+
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(dimensionResource(R.dimen.medium_padding))
         )
 
         CurrentThemeColor(
@@ -131,6 +158,7 @@ fun SettingsScreenPreview() {
             isColorPickerVisible = false,
             onColorPickerDismiss = {},
             changeThemeColor = {},
+            saveKey = {},
             onChangeThemeColorClick = {}
         )
     }

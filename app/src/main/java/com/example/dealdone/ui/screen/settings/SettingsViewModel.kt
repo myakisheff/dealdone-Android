@@ -5,17 +5,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-class SettingsViewModel : ViewModel() {
+class SettingsViewModel: ViewModel() {
     private val _settingsUiState = MutableStateFlow(SettingsUiState())
     val settingsUiState: StateFlow<SettingsUiState> = _settingsUiState
-
-    fun onStorageKeyChanged(key: String) {
-        _settingsUiState.update { state ->
-            state.copy(
-                keyValue = key
-            )
-        }
-    }
 
     fun changeKeyVisibility() {
         _settingsUiState.update { state ->
@@ -40,5 +32,4 @@ class SettingsViewModel : ViewModel() {
             )
         }
     }
-
 }
