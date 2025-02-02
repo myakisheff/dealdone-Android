@@ -29,13 +29,12 @@ import com.example.dealdone.data.model.TaskInfo
 import com.example.dealdone.data.model.TasksMock
 import com.example.dealdone.ui.component.TaskCard
 import com.example.dealdone.ui.theme.DealDoneTheme
-import java.util.UUID
 
 @Composable
 fun TaskScreen(
     taskUiState: TaskUiState,
     subtasks: List<TaskInfo>,
-    onTaskClick: (UUID) -> Unit,
+    onTaskClick: (Int) -> Unit,
     expandTask: () -> Unit,
     modifier: Modifier = Modifier
 ) {

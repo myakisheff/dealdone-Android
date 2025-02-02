@@ -1,25 +1,36 @@
 package com.example.dealdone.data.model
 
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import com.example.dealdone.data.entities.TaskEntity
 import java.util.Calendar
-import java.util.UUID
 
 data class TaskInfo(
-    val id: UUID,
+    val id: Int = 0,
     val name: String,
     val description: String,
     val targetDate: Calendar?,
     val creationDate: Calendar = Calendar.getInstance(),
     val taskPriority: TaskPriority,
     val taskStatus: TaskStatus,
-    val parentTaskID: UUID?,
+    val parentTaskID: Int?,
+)
+
+fun TaskInfo.toTaskEntity() : TaskEntity = TaskEntity(
+    id = id,
+    name = name,
+    description = description,
+    targetDate = targetDate?.timeInMillis,
+    creationDate = creationDate.timeInMillis,
+    taskPriority = taskPriority,
+    isCompleted = taskStatus == TaskStatus.COMPLETED,
+    parentTaskID = parentTaskID
 )
 
 object TasksMock {
     fun getRandomTask(number: Int = 1): List<TaskInfo> {
-        val generatedIds = buildList<UUID> {
+        val generatedIds = buildList {
             repeat(number) {
-                add(UUID.randomUUID())
+                add(it)
             }
         }
 

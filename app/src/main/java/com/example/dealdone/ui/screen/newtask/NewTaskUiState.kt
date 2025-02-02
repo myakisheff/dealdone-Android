@@ -4,7 +4,6 @@ import com.example.dealdone.data.model.TaskInfo
 import com.example.dealdone.data.model.TaskPriority
 import com.example.dealdone.data.model.TaskStatus
 import java.util.Calendar
-import java.util.UUID
 
 data class NewTaskUiState(
     val fastCreationTaskText: String = "",
@@ -13,7 +12,7 @@ data class NewTaskUiState(
 
 data class NewDefaultTaskUiState(
     val creationTask: TaskInfo = TaskInfo(
-        id = UUID.randomUUID(),
+        id = 0,
         name = "",
         description = "",
         targetDate = null,

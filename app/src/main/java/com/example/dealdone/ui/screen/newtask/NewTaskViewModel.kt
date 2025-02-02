@@ -11,11 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import java.util.Calendar
-import java.util.UUID
 
-class NewTaskViewModel(
-
-) : ViewModel() {
+class NewTaskViewModel : ViewModel() {
     private val _newTaskUiState = MutableStateFlow(NewTaskUiState())
     val newTaskUiState: StateFlow<NewTaskUiState> = _newTaskUiState
 
@@ -58,7 +55,6 @@ class NewTaskViewModel(
         else {
             newTasks.add(
                 TaskInfo(
-                    id = UUID.randomUUID(),
                     parentTaskID = currentTaskUiState.selectedTask?.id,
                     name = newDefaultTaskUiState.value.creationTask.name,
                     description = newDefaultTaskUiState.value.creationTask.description,
@@ -73,7 +69,7 @@ class NewTaskViewModel(
             _newDefaultTaskUiState.update {
                 it.copy(
                     creationTask = TaskInfo(
-                        id = UUID.randomUUID(),
+                        id = 0,
                         parentTaskID = null,
                         name = "",
                         description = "",
@@ -101,7 +97,6 @@ class NewTaskViewModel(
 
     private fun generateNewFastTask(taskText: String, currentTaskUiState: TaskUiState) : TaskInfo {
         return TaskInfo(
-            id = UUID.randomUUID(),
             parentTaskID = currentTaskUiState.selectedTask?.id,
             name = taskText.substringBefore(" "),
             description = taskText,
