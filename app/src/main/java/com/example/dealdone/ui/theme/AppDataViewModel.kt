@@ -1,7 +1,6 @@
 package com.example.dealdone.ui.theme
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
@@ -80,7 +79,7 @@ class AppDataViewModel(
     suspend fun saveThemeColor() {
         dataStoreManager.save(
             key = PreferencesKeys.THEME_COLOR,
-            value = _appDataState.value.dynamicThemeState.primaryColor.toArgb()
+            value = _appDataState.value.dynamicThemeState.primaryColorArgb
         )
     }
 
