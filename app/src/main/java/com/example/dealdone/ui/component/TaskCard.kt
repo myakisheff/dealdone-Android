@@ -30,7 +30,6 @@ import com.example.dealdone.data.model.TaskPriority
 import com.example.dealdone.data.model.TaskStatus
 import com.example.dealdone.ui.theme.DealDoneTheme
 import java.util.Calendar
-import java.util.UUID
 
 /**
  *  A card containing information about the task
@@ -102,11 +101,11 @@ fun TaskCardPreview() {
         Column {
             TaskCard(
                 task = TaskInfo(
-                    id = UUID.randomUUID(),
+                    id = 0,
                     name = "Low Task In_Progress",
                     description = "Task for a testing a preview of this task with long text example lorem",
                     targetDate = Calendar.getInstance(),
-                    parentTaskID = UUID.randomUUID(),
+                    parentTaskID = null,
                     taskPriority = TaskPriority.LOW,
                     taskStatus = TaskStatus.IN_PROGRESS
                 ),
@@ -117,11 +116,11 @@ fun TaskCardPreview() {
 
             TaskCard(
                 task = TaskInfo(
-                    id = UUID.randomUUID(),
+                    id = 2,
                     name = "Medium Task In_Progress",
                     description = "Task for a testing a preview of this task with long text example lorem",
                     targetDate = Calendar.getInstance(),
-                    parentTaskID = UUID.randomUUID(),
+                    parentTaskID = 1,
                     taskPriority = TaskPriority.MEDIUM,
                     taskStatus = TaskStatus.IN_PROGRESS
                 ),
@@ -132,11 +131,11 @@ fun TaskCardPreview() {
 
             TaskCard(
                 task = TaskInfo(
-                    id = UUID.randomUUID(),
+                    id = 1,
                     name = "High Task In_Progress",
                     description = "Task for a testing a preview of this task with long text example lorem",
                     targetDate = Calendar.getInstance(),
-                    parentTaskID = UUID.randomUUID(),
+                    parentTaskID = 1,
                     taskPriority = TaskPriority.HIGH,
                     taskStatus = TaskStatus.IN_PROGRESS
                 ),
@@ -147,11 +146,11 @@ fun TaskCardPreview() {
 
             TaskCard(
                 task = TaskInfo(
-                    id = UUID.randomUUID(),
+                    id = 1,
                     name = "Expired Task",
                     description = "Task for a testing a preview of this task with long text example lorem",
                     targetDate = Calendar.getInstance(),
-                    parentTaskID = UUID.randomUUID(),
+                    parentTaskID = 1,
                     taskPriority = TaskPriority.MEDIUM,
                     taskStatus = TaskStatus.EXPIRED
                 ),
@@ -162,11 +161,11 @@ fun TaskCardPreview() {
 
             TaskCard(
                 task = TaskInfo(
-                    id = UUID.randomUUID(),
+                    id = 1,
                     name = "Completed Task",
                     description = "Task for a testing a preview of this task with long text example lorem",
                     targetDate = Calendar.getInstance(),
-                    parentTaskID = UUID.randomUUID(),
+                    parentTaskID = 1,
                     taskPriority = TaskPriority.HIGH,
                     taskStatus = TaskStatus.COMPLETED
                 ),
