@@ -37,7 +37,7 @@ fun TaskEntity.toTaskInfo() : TaskInfo = TaskInfo(
 fun getTaskStatus(taskEntity: TaskEntity) : TaskStatus {
     return if(taskEntity.isCompleted) TaskStatus.COMPLETED
     else if(taskEntity.targetDate == null) return TaskStatus.IN_PROGRESS
-    else if(taskEntity.targetDate < Calendar.getInstance().timeInMillis) TaskStatus.IN_PROGRESS
+    else if(taskEntity.targetDate > Calendar.getInstance().timeInMillis) TaskStatus.IN_PROGRESS
     else TaskStatus.EXPIRED
 }
 
