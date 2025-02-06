@@ -9,6 +9,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.PostAdd
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -47,6 +49,7 @@ import com.example.dealdone.ui.screen.task.TaskViewModel
 import com.example.dealdone.ui.theme.AppDataViewModel
 import com.example.dealdone.ui.theme.AppDataViewModelFactory
 import com.example.dealdone.ui.theme.DealDoneDynamicTheme
+import com.example.dealdone.ui.theme.DealDoneTheme
 import kotlinx.coroutines.launch
 
 
@@ -95,6 +98,7 @@ fun DealDoneApp(
 
     val taskViewModel: TaskViewModel = viewModel(factory = TaskViewModel.Factory)
     val taskUiState = taskViewModel.currentTaskUiState.collectAsState().value
+    val taskEditUiState = taskViewModel.currentTaskEditUiState.collectAsState().value
 
     val newTaskViewModel: NewTaskViewModel = viewModel()
     val newTaskUiState = newTaskViewModel.newTaskUiState.collectAsState().value
@@ -136,8 +140,9 @@ fun DealDoneApp(
             DealDoneTopBar(
                 title = title,
                 canNavigateBack = taskUiState.selectedTask != null && currentScreen == DealDoneScreen.TASK_LIST,
-                onBackClick = taskViewModel::selectPreviousTask,
-                onHomeClick = taskViewModel::deselectTask
+                onBackClick = taskViewModel::navigateBack,
+                onHomeClick = taskViewModel::deselectTask,
+                onEditClick = taskViewModel::enableEditMode
             )
         },
         bottomBar = {
@@ -161,7 +166,26 @@ fun DealDoneApp(
                     onTaskClick = { taskViewModel.selectTask(it) },
                     expandTask = taskViewModel::expandCurrentTask,
                     subtasks = taskViewModel.getSubtasks(),
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier.padding(innerPadding),
+                    onTitleChanged = taskViewModel::onTaskEditTitleChanged,
+                    onDescriptionChanged = taskViewModel::onTaskEditChangeDescription,
+                    onChangeSelectedPriority = taskViewModel::onTaskEditChangePriority,
+                    onChangeInfinityTime = taskViewModel::onTaskEditChangeInfinityTime,
+                    onTimeConfirm = {
+                        taskViewModel.onTaskEditChangeTime(it)
+                        taskViewModel.onTaskEditHideTimePicker()
+                    },
+                    onTimeDismiss = taskViewModel::onTaskEditHideTimePicker,
+                    onDateConfirm = {
+                        taskViewModel.onTaskEditChangeDate(it)
+                        taskViewModel.onTaskEditHideDatePicker()
+                    },
+                    onDateDismiss = taskViewModel::onTaskEditHideDatePicker,
+                    onTimePickerClick = taskViewModel::onTaskEditShowTimePicker,
+                    onDatePickerClick = taskViewModel::onTaskEditShowDatePicker,
+                    onTaskSave = taskViewModel::saveCurrentTask,
+                    isEditMode = taskUiState.isEditMode,
+                    taskEditUiState = taskEditUiState
                 )
             }
 
@@ -259,6 +283,7 @@ fun DealDoneTopBar(
     canNavigateBack: Boolean,
     onBackClick: () -> Unit,
     onHomeClick: () -> Unit,
+    onEditClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -279,6 +304,13 @@ fun DealDoneTopBar(
                     Icon(
                         imageVector = Icons.Filled.Home,
                         contentDescription = stringResource(R.string.home)
+                    )
+                }
+
+                IconButton(onClick = onEditClick) {
+                    Icon(
+                        imageVector = Icons.Filled.Create,
+                        contentDescription = stringResource(R.string.edit_task)
                     )
                 }
             }
@@ -307,5 +339,47 @@ fun DealDoneBottomBar(
                 }
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun DealDoneTopBarPreview() {
+    DealDoneTheme {
+        DealDoneTopBar(
+            title = "Preview",
+            canNavigateBack = true,
+            onBackClick = {},
+            onHomeClick = {},
+            onEditClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+fun DealDoneBottomBarPreview() {
+    DealDoneTheme {
+        DealDoneBottomBar(
+            currentScreen = DealDoneScreen.TASK_LIST,
+            onTabPressed = {},
+            navigationItemContentList = listOf(
+                NavigationItemContent(
+                    screen = DealDoneScreen.TASK_LIST,
+                    icon = Icons.AutoMirrored.Filled.List,
+                    text = stringResource(R.string.task_list)
+                ),
+                NavigationItemContent(
+                    screen = DealDoneScreen.TASK_CREATION,
+                    icon = Icons.Filled.PostAdd,
+                    text = stringResource(R.string.create_new_task)
+                ),
+                NavigationItemContent(
+                    screen = DealDoneScreen.SETTINGS,
+                    icon = Icons.Default.Settings,
+                    text = stringResource(R.string.settings)
+                )
+            )
+        )
     }
 }

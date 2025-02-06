@@ -1,5 +1,7 @@
 package com.example.dealdone.ui.screen.task
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,8 +16,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,17 +30,72 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.dealdone.R
 import com.example.dealdone.data.extensions.formatToDateTimeString
 import com.example.dealdone.data.model.TaskInfo
+import com.example.dealdone.data.model.TaskPriority
 import com.example.dealdone.data.model.TasksMock
 import com.example.dealdone.ui.component.TaskCard
+import com.example.dealdone.ui.screen.newtask.DefaultCreationTask
+import com.example.dealdone.ui.screen.newtask.NewDefaultTaskUiState
 import com.example.dealdone.ui.theme.DealDoneTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskScreen(
     taskUiState: TaskUiState,
+    taskEditUiState: NewDefaultTaskUiState,
     subtasks: List<TaskInfo>,
     onTaskClick: (Int) -> Unit,
     expandTask: () -> Unit,
+    onTitleChanged: (String) -> Unit,
+    onDescriptionChanged: (String) -> Unit,
+    onChangeSelectedPriority: (TaskPriority) -> Unit,
+    onChangeInfinityTime: (Boolean) -> Unit,
+    onTimeConfirm: (TimePickerState) -> Unit,
+    onTimeDismiss: () -> Unit,
+    onDateConfirm: (Long?) -> Unit,
+    onDateDismiss: () -> Unit,
+    onTimePickerClick: () -> Unit,
+    onDatePickerClick: () -> Unit,
+    onTaskSave: () -> Unit,
+    isEditMode: Boolean,
     modifier: Modifier = Modifier
+) {
+    Crossfade(targetState = isEditMode, animationSpec = tween(durationMillis = 300)) { editMode ->
+        if(editMode) {
+            DefaultCreationTask(
+                onCreatePressed =onTaskSave,
+                taskUiState = taskEditUiState,
+                onTitleChanged = onTitleChanged,
+                onDescriptionChanged = onDescriptionChanged,
+                onChangeSelectedPriority = onChangeSelectedPriority,
+                onChangeInfinityTime = onChangeInfinityTime,
+                onTimeConfirm = onTimeConfirm,
+                onTimeDismiss = onTimeDismiss,
+                onDateConfirm = onDateConfirm,
+                onDateDismiss = onDateDismiss,
+                onTimePickerClick = onTimePickerClick,
+                onDatePickerClick = onDatePickerClick,
+                modifier = modifier
+            )
+        }
+        else {
+            TaskList(
+                subtasks = subtasks,
+                taskUiState = taskUiState,
+                onTaskClick = onTaskClick,
+                expandTask = expandTask,
+                modifier = modifier
+            )
+        }
+    }
+}
+
+@Composable
+fun TaskList(
+    modifier: Modifier = Modifier,
+    subtasks: List<TaskInfo>,
+    taskUiState: TaskUiState,
+    onTaskClick: (Int) -> Unit,
+    expandTask: () -> Unit
 ) {
     LazyColumn(
         modifier = modifier
@@ -143,6 +202,7 @@ fun CurrentTaskPreview() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun TaskScreenPreview() {
@@ -151,7 +211,20 @@ fun TaskScreenPreview() {
             taskUiState = TaskUiState(),
             expandTask = {},
             onTaskClick = {},
-            subtasks = TasksMock.getRandomTask(number = 7)
+            onTaskSave = {},
+            isEditMode = false,
+            subtasks = TasksMock.getRandomTask(number = 7),
+            onTitleChanged = {},
+            onDescriptionChanged = {},
+            onChangeSelectedPriority = {},
+            onChangeInfinityTime = {},
+            onTimeConfirm = {},
+            onTimeDismiss = {},
+            onDateConfirm = {},
+            onDateDismiss = {},
+            onTimePickerClick = {},
+            onDatePickerClick = {},
+            taskEditUiState = NewDefaultTaskUiState(),
         )
     }
 }
