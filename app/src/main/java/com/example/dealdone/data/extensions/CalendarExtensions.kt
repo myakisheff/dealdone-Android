@@ -19,3 +19,7 @@ fun Calendar.formatToDateString(): String {
     return dateFormat.format(this.time).toString()
 }
 
+fun Calendar.isExpired(): Boolean {
+    return this.timeInMillis > Calendar.getInstance().timeInMillis
+}
+
