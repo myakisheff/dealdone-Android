@@ -6,10 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,8 +16,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimePickerState
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +33,7 @@ import com.example.dealdone.data.extensions.formatToDateTimeString
 import com.example.dealdone.data.model.TaskInfo
 import com.example.dealdone.data.model.TaskPriority
 import com.example.dealdone.data.model.TasksMock
+import com.example.dealdone.ui.component.DismissBackground
 import com.example.dealdone.ui.component.TaskCard
 import com.example.dealdone.ui.screen.newtask.DefaultCreationTask
 import com.example.dealdone.ui.screen.newtask.NewDefaultTaskUiState
@@ -57,6 +59,8 @@ fun TaskScreen(
     onDatePickerClick: () -> Unit,
     onTaskSave: () -> Unit,
     isEditMode: Boolean,
+    onTaskDelete: (TaskInfo) -> Unit,
+    onTaskComplete: (TaskInfo) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Crossfade(targetState = isEditMode, animationSpec = tween(durationMillis = 300)) { editMode ->
@@ -74,7 +78,7 @@ fun TaskScreen(
                 onDateDismiss = onDateDismiss,
                 onTimePickerClick = onTimePickerClick,
                 onDatePickerClick = onDatePickerClick,
-                modifier = modifier
+                modifier = modifier.padding(dimensionResource(R.dimen.medium_padding))
             )
         }
         else {
@@ -83,7 +87,9 @@ fun TaskScreen(
                 taskUiState = taskUiState,
                 onTaskClick = onTaskClick,
                 expandTask = expandTask,
-                modifier = modifier
+                onTaskDelete = onTaskDelete,
+                onTaskComplete = onTaskComplete,
+                modifier = modifier.fillMaxHeight()
             )
         }
     }
@@ -94,13 +100,13 @@ fun TaskList(
     modifier: Modifier = Modifier,
     subtasks: List<TaskInfo>,
     taskUiState: TaskUiState,
+    onTaskDelete: (TaskInfo) -> Unit,
+    onTaskComplete: (TaskInfo) -> Unit,
     onTaskClick: (Int) -> Unit,
     expandTask: () -> Unit
 ) {
     LazyColumn(
         modifier = modifier
-            .padding(dimensionResource(R.dimen.small_padding))
-            .fillMaxHeight()
     ) {
         if(taskUiState.selectedTask != null){
             item {
@@ -112,11 +118,40 @@ fun TaskList(
             }
         }
 
-        items(subtasks) { task ->
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.medium_padding)))
-            TaskCard(
-                task = task,
-                onClick = { onTaskClick(task.id) }
+        items(subtasks, key = { task -> task.id }) { task ->
+
+            val dismissState = rememberSwipeToDismissBoxState(
+                confirmValueChange = {
+                    when(it) {
+                        SwipeToDismissBoxValue.StartToEnd -> {
+                            onTaskDelete(task)
+                        }
+                        SwipeToDismissBoxValue.EndToStart -> {
+                            onTaskComplete(task)
+                        }
+                        SwipeToDismissBoxValue.Settled -> return@rememberSwipeToDismissBoxState false
+                    }
+                    return@rememberSwipeToDismissBoxState false
+                },
+                positionalThreshold = { it * .25f }
+            )
+
+            SwipeToDismissBox(
+                state = dismissState,
+                backgroundContent = { DismissBackground(dismissState)},
+                content = {
+                    TaskCard(
+                        task = task,
+                        onClick = { onTaskClick(task.id) }
+                    )
+                },
+                modifier = Modifier
+                    .padding(
+                        top = dimensionResource(R.dimen.medium_padding),
+                        start = dimensionResource(R.dimen.medium_padding),
+                        end = dimensionResource(R.dimen.medium_padding),
+                    )
+                    .animateItem()
             )
         }
     }
@@ -224,6 +259,8 @@ fun TaskScreenPreview() {
             onDateDismiss = {},
             onTimePickerClick = {},
             onDatePickerClick = {},
+            onTaskDelete = {},
+            onTaskComplete = {},
             taskEditUiState = NewDefaultTaskUiState(),
         )
     }

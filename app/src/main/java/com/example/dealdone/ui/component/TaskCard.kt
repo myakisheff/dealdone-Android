@@ -2,20 +2,31 @@ package com.example.dealdone.ui.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BookmarkAdded
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.SwipeToDismissBoxState
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -57,6 +68,9 @@ fun TaskCard(
     Card(
         border = BorderStroke(1.dp, color),
         onClick = onClick,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
         modifier = modifier.fillMaxWidth()
     ) {
         Column(
@@ -91,6 +105,34 @@ fun TaskCard(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun DismissBackground(dismissState: SwipeToDismissBoxState) {
+    val color = when (dismissState.dismissDirection) {
+        SwipeToDismissBoxValue.StartToEnd -> colorResource(R.color.Delete)
+        SwipeToDismissBoxValue.EndToStart -> colorResource(R.color.Completed)
+        SwipeToDismissBoxValue.Settled -> Color.Transparent
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = color, shape = CardDefaults.shape)
+            .padding(12.dp, 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Icon(
+            imageVector = Icons.Default.Delete,
+            contentDescription = stringResource(R.string.delete)
+        )
+        Spacer(modifier = Modifier)
+        Icon(
+            imageVector = Icons.Default.BookmarkAdded,
+            contentDescription = stringResource(R.string.complete)
+        )
     }
 }
 

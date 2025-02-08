@@ -17,6 +17,8 @@ data class TaskUiState (
     val selectedTask: TaskInfo? = null,
     val isExpanded: Boolean = false,
     val isEditMode: Boolean = false,
+    val showDeleteConfirmation: Boolean = false,
+    val taskToDelete: TaskInfo? = null
 )
 
 fun TaskUiState.toNewDefaultTaskUiState() : NewDefaultTaskUiState = NewDefaultTaskUiState(

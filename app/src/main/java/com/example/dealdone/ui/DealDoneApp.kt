@@ -1,5 +1,7 @@
 package com.example.dealdone.ui
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +34,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -40,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.dealdone.R
 import com.example.dealdone.data.repository.DataStoreManager
 import com.example.dealdone.ui.component.NavigationItemContent
+import com.example.dealdone.ui.component.TaskDeleteConfirmationDialog
 import com.example.dealdone.ui.screen.newtask.NewTaskScreen
 import com.example.dealdone.ui.screen.newtask.NewTaskViewModel
 import com.example.dealdone.ui.screen.settings.SettingsScreen
@@ -141,7 +145,7 @@ fun DealDoneApp(
                 title = title,
                 canNavigateBack = taskUiState.selectedTask != null && currentScreen == DealDoneScreen.TASK_LIST,
                 onBackClick = taskViewModel::navigateBack,
-                onHomeClick = taskViewModel::deselectTask,
+                onHomeClick = taskViewModel::returnToMainTasks,
                 onEditClick = taskViewModel::enableEditMode
             )
         },
@@ -185,6 +189,8 @@ fun DealDoneApp(
                     onDatePickerClick = taskViewModel::onTaskEditShowDatePicker,
                     onTaskSave = taskViewModel::saveCurrentTask,
                     isEditMode = taskUiState.isEditMode,
+                    onTaskComplete = taskViewModel::completeTask,
+                    onTaskDelete = taskViewModel::showDeleteConfirmation,
                     taskEditUiState = taskEditUiState
                 )
             }
@@ -273,6 +279,21 @@ fun DealDoneApp(
                 )
             }
         }
+
+        if(taskUiState.showDeleteConfirmation) {
+            Row(
+                horizontalArrangement = Arrangement.Center
+            ) {
+                TaskDeleteConfirmationDialog(
+                    onDismiss = taskViewModel::hideDeleteConfirmation,
+                    onConfirm = taskViewModel::confirmDelete,
+                    onCancel = taskViewModel::hideDeleteConfirmation,
+                    taskTitle = taskUiState.taskToDelete?.name ?: "",
+                    modifier = Modifier.padding(dimensionResource(R.dimen.small_padding))
+                )
+            }
+        }
+
     }
 }
 
