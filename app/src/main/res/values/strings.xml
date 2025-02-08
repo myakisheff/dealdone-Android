@@ -29,4 +29,7 @@
     <string name="current_theme_color">Current theme color</string>
     <string name="save_key">Save key</string>
     <string name="edit_task">Edit task</string>
+    <string name="delete">delete</string>
+    <string name="complete">Complete</string>
+    <string name="delete_task">Delete task %1$s?</string>
 </resources>

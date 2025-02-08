@@ -12,6 +12,7 @@
     <color name="Medium_priority">#FFD54F</color>
     <color name="High_priority">#FF5252</color>
     <color name="Completed">#4CAF50</color>
+    <color name="Delete">#FFFF1744</color>
     <color name="Expired">#2B2B2B</color>
 
 </resources>
